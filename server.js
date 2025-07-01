@@ -6,7 +6,7 @@ import EngineerConnection from './User/EngineerConnection.js'
 import registerRoutes from './routes/registerRoutes.js'
 import loginRoutes from './routes/loginRoutes.js'
 import db from './db/db.js'
-
+import sparePartsRoutes from './routes/sparePartsRoutes.js';
 
 const app = express()
 const port = 8800
@@ -20,6 +20,6 @@ app.use('/Engineer',EngineerConnection)
 app.use('/api/register',registerRoutes)
 app.use('/api/login',loginRoutes)
 
-
+app.use('/api/spareparts', sparePartsRoutes);
 
 app.listen(port,()=>console.log(`Listen on ${port}`))

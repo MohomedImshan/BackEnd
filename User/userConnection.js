@@ -2,7 +2,7 @@ import express  from "express";
 import db from "../db/db.js"
 const router = express.Router()
 
-router.get("/User", async (req, res) => {
+router.get("/", async (req, res) => {
     try {
         
         const sqlUser = "SELECT * FROM users";

@@ -1,5 +1,7 @@
 import mysql from 'mysql'
 
+
+
 const db = mysql.createConnection({
     host:'127.0.0.1',
     user:'root',
@@ -13,4 +15,8 @@ db.connect((err)=>{
         console.log("Connected to mysql database")
     }
 })
+
+
+
+
 export default db

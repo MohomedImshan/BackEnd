@@ -1,7 +1,6 @@
 // routes/requestRoutes.js
 import express from 'express';
 import db from '../db/db.js';
-
 const router = express.Router();
 
 // POST: submit request
@@ -16,7 +15,6 @@ router.post('/addRequest', (req, res) => {
     res.status(201).json({ id: result.insertId, message: 'Request submitted' });
   });
 });
-
 // GET: fetch requests
 router.get('/allRequests', (req, res) => {
   const sql = 'SELECT * FROM requests ORDER BY created_at DESC';
@@ -25,7 +23,7 @@ router.get('/allRequests', (req, res) => {
       console.error('Select Error:', err);
       return res.status(500).send({ error: 'Select failed', details: err.message });
     }
-    res.json(results);
+    res.send(results);
   });
 });
 

@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
     }
 
     try {
-        const [existingUser] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+        const existingUser = await db.query("SELECT * FROM users WHERE email = ?", [email]);
 
         if (existingUser.length > 0) {
             return res.status(400).json({ message: "Email is already registered" });

@@ -1,25 +1,30 @@
-db.connect(err => {
-  if (err) console.log('DB Error:', err);
-  else console.log(' MySQL Connected');
-});
+// routes/requestRoutes.js
+import express from 'express';
+import db from '../db/db.js';
+const router = express.Router();
 
 // POST: submit request
-app.post('/api/request', (req, res) => {
+router.post('/addRequest', (req, res) => {
   const { department, machine_code, type, description, employee_name } = req.body;
   const sql = 'INSERT INTO requests (department, machine_code, type, description, employee_name) VALUES (?, ?, ?, ?, ?)';
   db.query(sql, [department, machine_code, type, description, employee_name], (err, result) => {
-    if (err) return res.status(500).send(err);
+    if (err) {
+      console.error('Insert Error:', err);
+      return res.status(500).send({ error: 'Insert failed', details: err.message });
+    }
     res.status(201).json({ id: result.insertId, message: 'Request submitted' });
   });
 });
-
 // GET: fetch requests
-app.get('/api/requests', (req, res) => {
+router.get('/allRequests', (req, res) => {
   const sql = 'SELECT * FROM requests ORDER BY created_at DESC';
   db.query(sql, (err, results) => {
-    if (err) return res.status(500).send(err);
-    res.json(results);
+    if (err) {
+      console.error('Select Error:', err);
+      return res.status(500).send({ error: 'Select failed', details: err.message });
+    }
+    res.send(results);
   });
 });
 
-app.listen(8800, () => console.log(' Backend running on http://localhost:8800'));
+export default router;

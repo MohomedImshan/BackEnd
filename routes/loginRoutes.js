@@ -23,7 +23,7 @@ router.post('/',async(req,res)=>{
         if(!checkpassword){
             return res.json({message:'Invalid email or password'})
         }
-        res.json({ name:user.userName,position:user.position})
+        res.json({ empNum:user.empNum,name:user.userName,position:user.position})
     })
 })
 export default router

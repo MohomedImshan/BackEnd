@@ -22,8 +22,8 @@ app.use('/Engineer', EngineerConnection);
 app.use('/Register', registerRoutes);
 app.use('/login', loginRoutes);
 app.use('/Add-Employee', AddEmployeeRoute);
-app.use('/api/requests', requestRoutes);
-app.use('/api/notifications', notificationRoutes);
+app.use('/requests', requestRoutes);
+app.use('/notifications', notificationRoutes);
 app.use('/api/spareparts', sparePartsRoutes);
 
 

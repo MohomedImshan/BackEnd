@@ -26,5 +26,34 @@ router.get('/allRequests', (req, res) => {
     res.send(results);
   });
 });
+//approve , reject
+router.put('/status/:id', (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  db.query('UPDATE requests SET status = ? WHERE id = ?', [status, id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: 'Status updated' });
+  });
+});
+//update
+router.put('/:id', (req, res) => {
+  const { department, machineCode, type, description, spareParts, employeeName } = req.body;
+  db.query(`
+    UPDATE requests SET department = ?, machineCode = ?, type = ?, description = ?, spareParts = ?, employeeName = ?
+    WHERE id = ?`,
+    [department, machineCode, type, description, spareParts.join(','), employeeName, req.params.id],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+      res.json({ message: 'Request updated successfully' });
+    });
+});
+//delete
+router.delete('/:id', (req, res) => {
+  db.query('DELETE FROM requests WHERE id = ?', [req.params.id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ message: 'Request deleted successfully' });
+  });
+});
+
 
 export default router;

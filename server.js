@@ -11,6 +11,9 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import sparePartsRoutes from './routes/sparePartsRoutes.js';
 import reportRoute from './routes/reportRoute.js'
 import rejectRoutes from './routes/rejectRoutes.js' 
+import assistentengineerroutes from './User/assistentengineerroutes.js'
+import technicianRoutes from './User/technicianRoutes.js'
+import ownrequestsRoutes from './routes/ownrequestsRoutes.js'
 
 const app = express();
 const port = 8800;
@@ -21,6 +24,8 @@ app.use(cors());
 
 app.use('/User', userConnection);
 app.use('/Engineer', EngineerConnection);
+app.use('/Assistent-Engineer', assistentengineerroutes);
+app.use('/Technician', technicianRoutes);
 app.use('/Register', registerRoutes);
 app.use('/login', loginRoutes);
 app.use('/Add-Employee', AddEmployeeRoute);
@@ -29,6 +34,7 @@ app.use('/notifications', notificationRoutes);
 app.use('/api/spareparts', sparePartsRoutes);
 app.use('/report', reportRoute);
 app.use('/reject', rejectRoutes);
+app.use('/ownrequests', ownrequestsRoutes);
 
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

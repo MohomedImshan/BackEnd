@@ -1,9 +1,10 @@
 import express  from "express";
 import bcrypt from 'bcrypt'
 import db from "../db/db.js"
+import verifyToken from "../routes/authentication.js";
 const router = express.Router()
 
-router.get("/", async (req, res) => {
+router.get("/", verifyToken,async (req, res) => {
     try {
         
         const sqlUser = "SELECT * FROM users";
@@ -22,7 +23,7 @@ router.get("/", async (req, res) => {
         return res.status(500).json({ error: err.message });
     }
 })
-router.post('/', async (req, res) => {
+router.post('/', verifyToken,async (req, res) => {
     const { userName, email, password, position } = req.body;
 
     if (!userName || !email || !password || !position) {
@@ -46,6 +47,19 @@ router.post('/', async (req, res) => {
         console.error("Registration error:", err);
         res.status(500).json({ message: 'Server error' });
     }
+});
+
+router.put('/:empNum', verifyToken,async (req, res) => {
+    
+    const empNum = req.params.empNum;
+    const { status } = req.body;
+    console.log("Received update for empNum:", empNum, "with status:", status);
+
+    const sql = "UPDATE users SET status=? WHERE empNum=?";
+    db.query(sql, [status,empNum], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        return res.json({ message: "User status  updated" });
+    });
 });
 
 

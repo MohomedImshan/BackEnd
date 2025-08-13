@@ -4,7 +4,7 @@ import verifyToken from './authentication.js'
 const router = express.Router()
 
 router.get('/',verifyToken, async (req, res) => {
-    const sql = "SELECT * FROM requests WHERE status='Reject' AND created_at>=DATE_SUB(NOW(), INTERVAL 14 DAY)";
+    const sql = "SELECT * FROM requests WHERE status='reject' AND created_at>=DATE_SUB(NOW(), INTERVAL 14 DAY)";
     db.query(sql, (err, data) => {
         if (err) return res.status(500).json({ error: err.message });
         return res.json({reject: data});

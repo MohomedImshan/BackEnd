@@ -5,9 +5,13 @@ const router = express.Router();
 
 // POST: submit request
 router.post('/addRequest', (req, res) => {
-  const { department, machine_code, type, description, employee_name } = req.body;
-  const sql = 'INSERT INTO requests (department, machine_code, type, description, employee_name) VALUES (?, ?, ?, ?, ?)';
-  db.query(sql, [department, machine_code, type, description, employee_name], (err, result) => {
+  
+  // const { department, machine_code, type, description,empNum,userName } = req.body;
+  const { formData, empNum, userName } = req.body;
+  const { department, machine_code, type, description } = formData;
+
+  const sql = 'INSERT INTO requests (department, machine_code, type, description,empNum, employee_name) VALUES (?, ? , ?, ?, ?, ?)';
+  db.query(sql, [department, machine_code, type, description, empNum , userName], (err, result) => {
     if (err) {
       console.error('Insert Error:', err);
       return res.status(500).send({ error: 'Insert failed', details: err.message });
@@ -37,11 +41,12 @@ router.put('/status/:id', (req, res) => {
 });
 //update
 router.put('/:id', (req, res) => {
-  const { department, machineCode, type, description, spareParts, employeeName } = req.body;
+  
+  const { department, machine_code, type, description,  employee_name } = req.body;
   db.query(`
-    UPDATE requests SET department = ?, machineCode = ?, type = ?, description = ?, spareParts = ?, employeeName = ?
+    UPDATE requests SET department = ?, machine_code = ?, type = ?, description = ?, employee_name = ?
     WHERE id = ?`,
-    [department, machineCode, type, description, spareParts.join(','), employeeName, req.params.id],
+    [department, machine_code, type, description, employee_name, req.params.id],
     (err, result) => {
       if (err) return res.status(500).json({ error: err.message });
       res.json({ message: 'Request updated successfully' });

@@ -23,17 +23,24 @@ router.post('/',async(req,res)=>{
 
         const user = results[0]
 
-        const checkpassword = await bcrypt.compare(password,user.password)
+        try{const checkpassword = await bcrypt.compare(password,user.password)
         if(!checkpassword){
             return res.json({message:'Invalid email or password'})
         }
         const token = jwt.sign(
             {
-                empNum:user.empNum,position:user.position
+                empNum:user.empNum,position:user.position,userName:user.userName
             },
             SECRET_KEY,{expiresIn:'1h'}
         )
-        res.json({token})
+        res.json({
+            token,
+            empNum: user.empNum,
+            position: user.position,
+            userName: user.userName})
+    }catch(eror){
+        return res.status(500).json({ message: 'Error during login' })
+    }
     })
 })
 export default router

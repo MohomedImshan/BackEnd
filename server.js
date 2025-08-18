@@ -15,26 +15,38 @@ import assistentengineerroutes from './User/assistentengineerroutes.js'
 import technicianRoutes from './User/technicianRoutes.js'
 import ownrequestsRoutes from './routes/ownrequestsRoutes.js'
 
-const app = express();
-const port = 8800;
 
 
-app.use(express.json());
-app.use(cors());
 
-app.use('/User', userConnection);
-app.use('/Engineer', EngineerConnection);
-app.use('/Assistent-Engineer', assistentengineerroutes);
-app.use('/Technician', technicianRoutes);
-app.use('/Register', registerRoutes);
-app.use('/login', loginRoutes);
-app.use('/Add-Employee', AddEmployeeRoute);
-app.use('/requests', requestRoutes);
-app.use('/notifications', notificationRoutes);
+
+const app = express()
+const port = 8800
+
+app.use(express.json())
+app.use(cors())
+app.use(bodyParser.json())
+
+app.use('/User',userConnection)
+app.use('/EngineerDashboard',EngineerConnection)
+app.use('/Register',registerRoutes)
+app.use('/login',loginRoutes)
+app.use('/Add-Employee',AddEmployeeRoute)
+app.use('/User',userConnection);
+app.use('/Engineer',EngineerConnection);
+app.use('/api/register',registerRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/requests', requestRoutes);
 app.use('/api/spareparts', sparePartsRoutes);
 app.use('/report', reportRoute);
 app.use('/reject', rejectRoutes);
 app.use('/ownrequests', ownrequestsRoutes);
+app.use('/Assistent-Engineer', assistentengineerroutes);
+app.use('/Technician', technicianRoutes);
+
+
+
+
+
 
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

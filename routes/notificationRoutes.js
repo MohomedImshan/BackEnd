@@ -1,34 +1,4 @@
-/*import express from "express";
-import db from "../db/db.js";
 
-const router = express.Router();
-
-/**
- * GET /api/notifications?search=
- * Returns requests with optional search across multiple columns
- 
-router.get("/", async (req, res) => {
-  try {
-    const search = (req.query.search || '').trim();
-    const like = `%${search}%`;
-    const sql = `
-      SELECT id, empNum, department, machine_code, type, description,
-             employee_name, status, created_at, approved_daate
-      FROM requests
-      WHERE ? = '' OR CONCAT_WS(' ', empNum, department, machine_code, type, description, employee_name, status)
-            LIKE ?
-      ORDER BY created_at DESC
-    `;
-    const [rows] = await db.query(sql, [search, like]);
-    res.json(rows);
-  } catch (err) {
-    console.error("Error fetching notifications:", err);
-    res.status(500).json({ error: "Database error" });
-  }
-});
-
-export default router;
-*/
 // notificationRoutes.js
 import express from "express";
 import db from "../db/db.js";

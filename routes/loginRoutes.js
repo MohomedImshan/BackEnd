@@ -1,11 +1,15 @@
 import express from 'express'
 import bcrypt from 'bcrypt'
 import db from '../db/db.js'
+import jwt from 'jsonwebtoken'
+
 
 const router = express.Router()
+const SECRET_KEY = '12345';
 
 router.post('/',async(req,res)=>{
     const {email,password} = req.body
+    
 
     const sql = "SELECT * FROM users WHERE email = ?"
 
@@ -19,11 +23,24 @@ router.post('/',async(req,res)=>{
 
         const user = results[0]
 
-        const checkpassword = await bcrypt.compare(password,user.password)
+        try{const checkpassword = await bcrypt.compare(password,user.password)
         if(!checkpassword){
             return res.json({message:'Invalid email or password'})
         }
-        res.json({ name:user.userName,position:user.position})
+        const token = jwt.sign(
+            {
+                empNum:user.empNum,position:user.position,userName:user.userName
+            },
+            SECRET_KEY,{expiresIn:'1h'}
+        )
+        res.json({
+            token,
+            empNum: user.empNum,
+            position: user.position,
+            userName: user.userName})
+    }catch(eror){
+        return res.status(500).json({ message: 'Error during login' })
+    }
     })
 })
 export default router

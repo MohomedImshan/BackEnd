@@ -4,7 +4,7 @@ import verifyToken from "../routes/authentication.js";
 
 const router = express.Router()
 
-router.get("/Engineer",verifyToken, async (req, res) => {
+router.get("/Assistent-Engineer",verifyToken, async (req, res) => {
     try {
 
         const sqlUser = "SELECT * FROM users ";

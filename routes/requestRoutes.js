@@ -4,6 +4,7 @@ import db from "../db/db.js";
 
 const router = express.Router();
 
+
 // Add a new request
 router.post("/addRequest", (req, res) => {
   const { empNum, department, machine_code, type, description, userName } = req.body;
@@ -18,6 +19,7 @@ router.post("/addRequest", (req, res) => {
   `;
 
   db.query(sql, [empNum, department, machine_code, type, description, userName], (err, result) => {
+
     if (err) {
       console.error("Insert Error:", err);
       return res.status(500).json({ error: "Insert failed", details: err.message });
@@ -55,6 +57,7 @@ router.get("/allRequests", (req, res) => {
   });
 });
 
+
 // Get single request with spare parts
 router.get("/:id", (req, res) => {
   const id = req.params.id;
@@ -77,6 +80,7 @@ router.get("/:id", (req, res) => {
         return res.status(500).json({ error: "Database error", details: err2.message });
       }
       res.json({ ...request, spareParts: partsRows || [] });
+
     });
   });
 });

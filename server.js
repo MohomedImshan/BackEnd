@@ -1,18 +1,21 @@
-import express from "express"
-import bodyParser from "body-parser"
-import cors from "cors"
-import userConnection from './User/userConnection.js'
-//Paba
+import express from "express";
+import cors from "cors";
+
+import userConnection from './User/userConnection.js';
+import EngineerConnection from './User/EngineerConnection.js';
+import registerRoutes from './routes/registerRoutes.js';
+import loginRoutes from './routes/loginRoutes.js';
+import AddEmployeeRoute from './User/AddEmployeeRoute.js';
 import requestRoutes from './routes/requestRoutes.js';
-import notificationRoutes from './routes/notificationRoutes.js'
-
-
-import EngineerConnection from './User/EngineerConnection.js'
-import registerRoutes from './routes/registerRoutes.js'
-import loginRoutes from './routes/loginRoutes.js'
-import db from './db/db.js'
+import notificationRoutes from './routes/notificationRoutes.js';
 import sparePartsRoutes from './routes/sparePartsRoutes.js';
-import AddEmployeeRoute from './User/AddEmployeeRoute.js'
+import reportRoute from './routes/reportRoute.js'
+import rejectRoutes from './routes/rejectRoutes.js' 
+import assistentengineerroutes from './User/assistentengineerroutes.js'
+import technicianRoutes from './User/technicianRoutes.js'
+import ownrequestsRoutes from './routes/ownrequestsRoutes.js'
+
+
 
 
 
@@ -28,16 +31,22 @@ app.use('/EngineerDashboard',EngineerConnection)
 app.use('/Register',registerRoutes)
 app.use('/login',loginRoutes)
 app.use('/Add-Employee',AddEmployeeRoute)
-
 app.use('/User',userConnection);
 app.use('/Engineer',EngineerConnection);
 app.use('/api/register',registerRoutes);
-//paba
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/spareparts', sparePartsRoutes);
-app.listen(8800,()=>console.log(`Listen on ${port}`));
+app.use('/report', reportRoute);
+app.use('/reject', rejectRoutes);
+app.use('/ownrequests', ownrequestsRoutes);
+app.use('/Assistent-Engineer', assistentengineerroutes);
+app.use('/Technician', technicianRoutes);
 
 
 
 
+
+
+
+app.listen(port, () => console.log(`Listening on port ${port}`));

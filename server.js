@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import bodyParser from "body-parser";
+
 
 import userConnection from './User/userConnection.js';
 import EngineerConnection from './User/EngineerConnection.js';

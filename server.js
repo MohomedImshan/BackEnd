@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import bodyParser from "body-parser";
 
 import userConnection from './User/userConnection.js';
 import EngineerConnection from './User/EngineerConnection.js';
@@ -14,10 +15,6 @@ import rejectRoutes from './routes/rejectRoutes.js'
 import assistentengineerroutes from './User/assistentengineerroutes.js'
 import technicianRoutes from './User/technicianRoutes.js'
 import ownrequestsRoutes from './routes/ownrequestsRoutes.js'
-
-
-
-
 
 const app = express()
 const port = 8800
@@ -42,11 +39,6 @@ app.use('/reject', rejectRoutes);
 app.use('/ownrequests', ownrequestsRoutes);
 app.use('/Assistent-Engineer', assistentengineerroutes);
 app.use('/Technician', technicianRoutes);
-
-
-
-
-
 
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

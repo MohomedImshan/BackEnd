@@ -7,18 +7,18 @@ const router = express.Router();
 
 // Add a new request
 router.post("/addRequest", (req, res) => {
-  const { empNum, department, machine_code, type, description, userName } = req.body;
-  if (!empNum || !department || !machine_code || !type) {
+  const { empNum, department, machine_code, type, description, userName,parts } = req.body;
+  if (!empNum || !department || !machine_code || !type ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   const sql = `
     INSERT INTO requests 
-      (empNum, department, machine_code, type, description, employee_name, status, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, 'Pending', NOW())
+      (empNum, department, machine_code, type, description, userName, parts)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(sql, [empNum, department, machine_code, type, description, userName], (err, result) => {
+  db.query(sql, [empNum, department, machine_code, type, description, userName,JSON.stringify(parts)], (err, result) => {
 
     if (err) {
       console.error("Insert Error:", err);
@@ -29,24 +29,24 @@ router.post("/addRequest", (req, res) => {
 });
 
 // Add a spare part to a request
-router.post("/addParts", (req, res) => {
-  const { requestId, partName, count } = req.body;
-  if (!requestId || !partName || !count) {
-    return res.status(400).json({ error: "Missing fields" });
-  }
+// router.post("/addParts", (req, res) => {
+//   const { requestId, partName, count } = req.body;
+//   if (!requestId || !partName || !count) {
+//     return res.status(400).json({ error: "Missing fields" });
+//   }
 
-  const sql = "INSERT INTO spare_parts (request_id, part_name, count) VALUES (?, ?, ?)";
-  db.query(sql, [requestId, partName, count], (err, result) => {
-    if (err) {
-      console.error("Add Parts Error:", err);
-      return res.status(500).json({ error: "Failed to add spare parts", details: err.message });
-    }
-    res.status(201).json({ message: "Spare part added successfully", result });
-  });
-});
+//   const sql = "INSERT INTO spare_parts (request_id, part_name, count) VALUES (?, ?, ?)";
+//   db.query(sql, [requestId, partName, count], (err, result) => {
+//     if (err) {
+//       console.error("Add Parts Error:", err);
+//       return res.status(500).json({ error: "Failed to add spare parts", details: err.message });
+//     }
+//     res.status(201).json({ message: "Spare part added successfully", result });
+//   });
+// });
 
 // Get all requests
-router.get("/allRequests", (req, res) => {
+router.get("/allRequests", async (req, res) => {
   const sql = "SELECT * FROM requests ORDER BY created_at DESC";
   db.query(sql, (err, rows) => {
     if (err) {
@@ -74,29 +74,28 @@ router.get("/:id", (req, res) => {
 
     const request = requestRows[0];
 
-    db.query("SELECT * FROM spare_parts WHERE request_id = ?", [id], (err2, partsRows) => {
-      if (err2) {
-        console.error("Fetch parts error:", err2);
-        return res.status(500).json({ error: "Database error", details: err2.message });
-      }
-      res.json({ ...request, spareParts: partsRows || [] });
-
-    });
+    let spareParts=[]
+    try{
+      spareParts=request.parts?JSON.parse(request.parts):[]
+    }catch(parseErr){
+      console.error("Error parsing parts JSON:",parseErr)
+    }
+    res.json({...request,spareParts})
   });
 });
 
 // Update request fields
 router.put("/:id", (req, res) => {
   const id = req.params.id;
-  const { empNum, department, machine_code, type, description, employee_name } = req.body;
+  const { empNum, department, machine_code, type, description, userName } = req.body;
 
   const sql = `
     UPDATE requests
-    SET empNum = ?, department = ?, machine_code = ?, type = ?, description = ?, employee_name = ?
+    SET empNum = ?, department = ?, machine_code = ?, type = ?, description = ?, userName = ?
     WHERE id = ?
   `;
 
-  db.query(sql, [empNum, department, machine_code, type, description, employee_name, id], (err, result) => {
+  db.query(sql, [empNum, department, machine_code, type, description, userName, id], (err, result) => {
     if (err) {
       console.error("Update Error:", err);
       return res.status(500).json({ error: "Update failed", details: err.message });

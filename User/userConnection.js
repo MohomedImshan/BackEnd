@@ -2,6 +2,7 @@ import express  from "express";
 import bcrypt from 'bcrypt'
 import db from "../db/db.js"
 import verifyToken from "../routes/authentication.js";
+import addLog from "../routes/Service/logService.js";
 const router = express.Router()
 
 router.get("/", verifyToken,async (req, res) => {
@@ -26,6 +27,7 @@ router.get("/", verifyToken,async (req, res) => {
 router.post('/', verifyToken,async (req, res) => {
     const { userName, email, password, position } = req.body;
 
+
     if (!userName || !email || !password || !position) {
         return res.status(400).json({ message: "All fields are required" });
     }
@@ -39,9 +41,11 @@ router.post('/', verifyToken,async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const sql = "INSERT INTO users (userName, email, password, position) VALUES (?, ?, ?, ?)";
+        
         await db.query(sql, [userName, email, hashedPassword, position]);
 
         res.status(201).json({ message: "User registered successfully!" });
+        addLog(req.user.empNum,"Register","New user Registered")
 
     } catch (err) {
         console.error("Registration error:", err);
@@ -56,8 +60,10 @@ router.put('/:empNum', verifyToken,async (req, res) => {
     console.log("Received update for empNum:", empNum, "with status:", status);
 
     const sql = "UPDATE users SET status=? WHERE empNum=?";
+    
     db.query(sql, [status,empNum], (err) => {
         if (err) return res.status(500).json({ error: err.message });
+        addLog(req.user.empNum,"UPDATE STATUS",`Updated the status of Employee Number ${empNum}`)
         return res.json({ message: "User status  updated" });
     });
 });

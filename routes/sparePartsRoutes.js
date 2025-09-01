@@ -1,5 +1,6 @@
 import express from 'express';
 import db from '../db/db.js';
+import AddTransaction from './Service/transactionService.js';
 //import addLog from './Service/logService.js';
 
 const router = express.Router();
@@ -20,9 +21,11 @@ router.post('/', (req, res) => {
     }
 
     const sql = "INSERT INTO spare_parts_tbl (department, type, item_name, quantity) VALUES (?, ?, ?, ?)";
-    db.query(sql, [department, type, item_name, quantity], (err) => {
+    db.query(sql, [department, type, item_name, quantity], (err,result) => {
         if (err) return res.status(500).json({ error: err.message });
        // addLog(req.user.empNum,"ADD SPARE PART",`Spare part is added ${item_name}`)
+       const insertedId = result.insertId;
+       AddTransaction("Add Spare parts",insertedId,item_name,quantity)
         return res.status(201).json({ message: "Spare part added" });
         
     });
@@ -35,6 +38,7 @@ router.put('/:id', (req, res) => {
     const sql = "UPDATE spare_parts_tbl SET department=?, type=?, item_name=?, quantity=? WHERE id=?";
     db.query(sql, [department, type, item_name, quantity, id], (err) => {
         if (err) return res.status(500).json({ error: err.message });
+        AddTransaction("Update Spare parts",id,item_name,quantity)
         return res.json({ message: "Spare part updated" });
     });
 });

@@ -47,7 +47,7 @@ router.post("/addRequest", (req, res) => {
 
 // Get all requests
 router.get("/allRequests", async (req, res) => {
-  const sql = "SELECT * FROM requests ORDER BY created_at DESC";
+  const sql = "SELECT * FROM requests WHERE status='pending' ORDER BY created_at DESC";
   db.query(sql, (err, rows) => {
     if (err) {
       console.error("Select Error:", err);

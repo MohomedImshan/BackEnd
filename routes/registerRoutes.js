@@ -1,6 +1,7 @@
 import express from 'express'
 import bcrypt from 'bcrypt'
 import db from '../db/db.js'
+import addLog from './Service/logService.js';
 
 const router = express.Router()
 
@@ -21,7 +22,7 @@ router.post('/', async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const sql = "INSERT INTO users (userName, email, password, position) VALUES (?, ?, ?, ?)";
         await db.query(sql, [userName, email, hashedPassword, position]);
-
+        addLog(req.user.empNum,"Register",`${userName} Registered`)
         res.status(201).json({ message: "User registered successfully!" });
 
     } catch (err) {

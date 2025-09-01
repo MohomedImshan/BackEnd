@@ -1,6 +1,7 @@
 
 import express from "express";
 import db from "../db/db.js";
+import AddTransaction from "./Service/transactionService.js";
 
 const router = express.Router();
 
@@ -105,20 +106,122 @@ router.put("/:id", (req, res) => {
 });
 
 // Update status (and approved_date if Approved)
-router.put("/status/:id", (req, res) => {
-  const id = req.params.id;
-  const { status } = req.body;
-  const approved = status === "Approved" ? new Date() : null;
+// router.put("/status/:id", async (req, res) =>{
+//   const {id} = req.params
+//   const {status} = req.body
+//   if(!status){
+//     return res.status(400).json({message:"Status is required"})
 
-  const sql = "UPDATE requests SET status = ?, approved_date = ? WHERE id = ?";
-  db.query(sql, [status, approved, id], (err, result) => {
-    if (err) {
-      console.error("Status update error:", err);
-      return res.status(500).json({ error: "Status update failed", details: err.message });
+//   }
+//   try{
+//     const [rows] = await db.query("SELECT * FROM requests WHERE id = ? ",[id])
+//     if(rows.length === 0){
+//       return res.status(404).json({message:"Request not found"})
+//     }
+//     const request = rows[0]
+
+//     if(status === "Approved" && request.parts){
+//       const parts = JSON.parse(request.parts)
+
+//       for (const part of parts){
+//         await db.query("UPDATE spare_parts_tbl SET quantity = quantity - ? WHERE item_name=? and quantity >=?",
+//         [part.quantity,part.item_name,part.quantity])
+//       }
+//     }
+  
+//   await db.query("UPDATE requests SET status = ? ,approved_date = CURRENT_TIMESTAMP WHERE id=?",
+//   [status,id])
+//   res.json({message: `Request ${id} updated to ${status}`})
+  
+//   }catch(err){
+//     console.error("Error updating request:", err);
+//     res.status(500).json({ message: "Internal Server Error", details: err.message });
+//   }
+// });
+
+router.put("/status/:id",async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ message: "Status is required" });
+  }
+
+  db.query("SELECT * FROM requests WHERE id = ?", [id], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (rows.length === 0) return res.status(404).json({ message: "Request not found" });
+
+    const request = rows[0];
+
+    if (status === "Approved" && request.parts) {
+      let parts;
+      try {
+        parts = JSON.parse(request.parts);
+      } catch (e) {
+        return res.status(400).json({ message: "Invalid parts JSON" });
+      }
+
+      // Process parts sequentially
+      const processPart = (index) => {
+        if (index >= parts.length) {
+          // All parts processed, update request status
+          return db.query(
+            "UPDATE requests SET status = ?, approved_date = CURRENT_TIMESTAMP WHERE id = ?",
+            [status, id],
+            (err) => {
+              if (err) return res.status(500).json({ error: err.message });
+              return res.json({ message: `Request ${id} updated to ${status}` });
+            }
+          );
+        }
+
+        const part = parts[index];
+
+        // Check stock
+        db.query("SELECT quantity FROM spare_parts_tbl WHERE id = ?", [part.id], (err, stockRows) => {
+          if (err) return res.status(500).json({ error: err.message });
+          if (stockRows.length === 0) return res.status(404).json({ message: `Part ${part.item_name} not found` });
+
+          const available = stockRows[0].quantity;
+          if (available < part.quantity) {
+            return res.status(400).json({
+              message: `Not enough stock for ${part.item_name}. Available: ${available}, Requested: ${part.quantity}`
+            });
+          }
+
+          // Deduct stock
+          db.query(
+            "UPDATE spare_parts_tbl SET quantity = quantity - ? WHERE id = ?",
+            [part.quantity, part.id],
+            (err) => {
+              if (err) return res.status(500).json({ error: err.message });
+
+              // Log transaction
+              AddTransaction("Issued", part.id, part.item_name, part.quantity);
+
+              // Next part
+              processPart(index + 1);
+            }
+          );
+        });
+      };
+
+      processPart(0); // start processing parts
+    } else {
+      // For non-approved status, just update the request
+      db.query(
+        "UPDATE requests SET status = ?, approved_date = CURRENT_TIMESTAMP WHERE id = ?",
+        [status, id],
+        (err) => {
+          if (err) return res.status(500).json({ error: err.message });
+          return res.json({ message: `Request ${id} updated to ${status}` });
+        }
+      );
     }
-    res.json({ message: "Status updated", result });
   });
 });
+
+
 
 // Delete request and its parts
 router.delete("/:id", (req, res) => {

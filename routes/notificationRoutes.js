@@ -14,7 +14,7 @@ router.get("/", (req, res) => {
   let sql = `
     SELECT id, empNum, department, machine_code, type, description,
     userName, status, created_at, approved_date
-    FROM requests
+    FROM requests WHERE status="pending"
   `;
 
   const params = [];

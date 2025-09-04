@@ -40,7 +40,7 @@ app.use('/api/spareparts', sparePartsRoutes);
 app.use('/report', reportRoute);
 app.use('/reject', rejectRoutes);
 app.use('/ownrequests', ownrequestsRoutes);
-app.use('/Assistent-Engineer', assistentengineerroutes);
+app.use('/Assistant-Engineer', assistentengineerroutes);
 app.use('/Technician', technicianRoutes);
 app.use('/logfile',logfileRoute);
 app.use('/transaction',transaction);

@@ -13,14 +13,14 @@ router.get("/", (req, res) => {
   const search = (req.query.search || '').trim();
   let sql = `
     SELECT id, empNum, department, machine_code, type, description,
-           employee_name, status, created_at, approved_date
+           userName, status, created_at, approved_date
     FROM requests
   `;
 
   const params = [];
 
   if (search) {
-    sql += ` WHERE CONCAT_WS(' ', empNum, department, machine_code, type, description, employee_name, status) LIKE ?`;
+    sql += ` WHERE CONCAT_WS(' ', empNum, department, machine_code, type, description, userName, status) LIKE ?`;
     params.push(`%${search}%`);
   }
 

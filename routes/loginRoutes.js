@@ -25,7 +25,13 @@ router.post('/',async(req,res)=>{
 
         const user = results[0]
 
-        try{const checkpassword = await bcrypt.compare(password,user.password)
+        if(user.status !== "Active"){
+            addLog(user.empNum,'Login Failed',`Attempted login but account is ${user.status}`)
+            return res.status(403).json({message:"Your account us not active,Contact admin..."})
+        }
+
+        try{
+            const checkpassword = await bcrypt.compare(password,user.password)
         if(!checkpassword){
             addLog(user.empNum,"LOGIN_FAILED",`wrong password for email:${email}`)
             return res.json({message:'Invalid email or password'})

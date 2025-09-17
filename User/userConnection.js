@@ -67,7 +67,20 @@ router.put('/:empNum', verifyToken,async (req, res) => {
         return res.json({ message: "User status  updated" });
     });
 });
+router.delete('/:empNum',verifyToken,async (req, res) => {
+    const  empNum  = req.params.empNum;
+    const loggedInUser = req.user.empNum
 
+    if(parseInt(empNum) === loggedInUser){
+        return res.status(403).json({message:"You cannot delete your own account"})
+    }
+
+    const sql = "DELETE FROM users WHERE empNum=?";
+    db.query(sql, [empNum], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        return res.json({ message: "User deleted successfully" });
+    });
+});
 
 
 export default router

@@ -17,6 +17,7 @@ import technicianRoutes from './User/technicianRoutes.js'
 import ownrequestsRoutes from './routes/ownrequestsRoutes.js'
 import logfileRoute from './routes/logfileRoute.js'
 import transaction from './routes/transactionRoute.js'
+import logout from './routes/logout.js'
 //import  AddTransaction from './routes/Service/transactionService.js'
 
 const app = express()
@@ -44,6 +45,7 @@ app.use('/Assistant-Engineer', assistentengineerroutes);
 app.use('/Technician', technicianRoutes);
 app.use('/logfile',logfileRoute);
 app.use('/transaction',transaction);
+app.use('/logout',logout)
 //app.use('/AddTransaction',AddTransaction)
 
 

@@ -117,13 +117,5 @@ router.put("/:empNum/changepassword",async(req,res)=>{
 //       }
 // });
 
-router.delete('/:empNum',verifyToken,async (req, res) => {
-    const  empNum  = req.params.empNum;
 
-    const sql = "DELETE FROM users WHERE empNum=?";
-    db.query(sql, [empNum], (err) => {
-        if (err) return res.status(500).json({ error: err.message });
-        return res.json({ message: "User deleted successfully" });
-    });
-});
 export default router

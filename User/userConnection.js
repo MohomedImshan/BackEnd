@@ -56,12 +56,12 @@ router.post('/', verifyToken,async (req, res) => {
 router.put('/:empNum', verifyToken,async (req, res) => {
     
     const empNum = req.params.empNum;
-    const { status } = req.body;
+    const { userName,email,position,status } = req.body;
     console.log("Received update for empNum:", empNum, "with status:", status);
 
-    const sql = "UPDATE users SET status=? WHERE empNum=?";
+    const sql = "UPDATE users SET userName = ? ,email = ? ,position = ?, status=? WHERE empNum=?";
     
-    db.query(sql, [status,empNum], (err) => {
+    db.query(sql, [userName,email,position,status,empNum], (err) => {
         if (err) return res.status(500).json({ error: err.message });
         addLog(req.user.empNum,"UPDATE STATUS",`Updated the status of Employee Number ${empNum}`)
         return res.json({ message: "User status  updated" });

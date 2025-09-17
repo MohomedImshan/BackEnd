@@ -1,10 +1,12 @@
 import express from "express";
 import db from "../db/db.js"
 import verifyToken from "../routes/authentication.js";
+import addLog from "../routes/Service/logService.js";
+import bcrypt from 'bcrypt'
 
 const router = express.Router()
 
-router.get("/Assistent-Engineer",verifyToken, async (req, res) => {
+router.get("/",verifyToken, async (req, res) => {
     try {
 
         const sqlUser = "SELECT * FROM users ";
@@ -46,17 +48,44 @@ router.get("/:empNum",verifyToken, async (req, res) => {
         return res.json({users:data})
     })
 })
-router.put("/:empNum",verifyToken,async(req,res)=>{
+router.put("/:empNum",async(req,res)=>{
     const empNum = req.params.empNum
-    const {userName,email,position} = req.body
-    const sql = "UPDATE users SET userName = ?,email = ? ,position = ? WHERE empNum = ?"
-
+    const {userName,email}=req.body
     try{
-        db.query(sql,[userName,email,position,empNum])
+
+        const sql = "UPDATE users SET userName = ?,email = ?   WHERE empNum = ?";
+        await db.query(sql,[userName,email,empNum])
+        addLog(empNum,"Update Details",`Changed User details of ${userName}` )
         res.status(200).json({message:"User update successfully"})
     }catch(err){
-        res.status(500).json({error:"Update failed"})
+        console.error("Updare failed",err)
+        res.status(500).json({error:"Update faile   d",details:err.message})
     }
+})
+router.put("/:empNum/changepassword",async(req,res)=>{
+const empNum = req.params.empNum
+
+const {confirmpassword}=req.body
+try{
+    // const [rows]=await db.query("SELECT * FROM users WHERE empNum=?",[empNum])
+    // if(rows.length === 0) return res.status(404).json({message: "User not found"})
+
+    // const user =rows[0]
+
+    
+
+    const hashedpassword = await bcrypt.hash(confirmpassword,10)
+
+    const sql = "UPDATE users SET password = ? WHERE empNum=?"
+    await db.query(sql,[hashedpassword,empNum])
+
+    addLog(empNum,"Update Details","Changed the user password")
+
+    res.status(200).json({message:"Password updated successfully"})
+}catch(err){
+    console.error("Update failed", err);
+    res.status(500).json({ error: "Update failed", details: err.message });
+}
 })
 // router.put("/:empNum",async(req,res)=>{
 //     const empNum = req.params.empNum

@@ -13,8 +13,9 @@ router.get("/", (req, res) => {
   const search = (req.query.search || '').trim();
   let sql = `
     SELECT id, empNum, department, machine_code, type, description,
-           userName, status, created_at, approved_date
-    FROM requests
+    userName, status, created_at, approved_date
+    FROM requests WHERE status="pending"
+
   `;
 
   const params = [];

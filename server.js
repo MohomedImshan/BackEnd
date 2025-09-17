@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 
-
 import userConnection from './User/userConnection.js';
 import EngineerConnection from './User/EngineerConnection.js';
 import registerRoutes from './routes/registerRoutes.js';
@@ -16,10 +15,10 @@ import rejectRoutes from './routes/rejectRoutes.js'
 import assistentengineerroutes from './User/assistentengineerroutes.js'
 import technicianRoutes from './User/technicianRoutes.js'
 import ownrequestsRoutes from './routes/ownrequestsRoutes.js'
-
-
-
-
+import logfileRoute from './routes/logfileRoute.js'
+import transaction from './routes/transactionRoute.js'
+import logout from './routes/logout.js'
+//import  AddTransaction from './routes/Service/transactionService.js'
 
 const app = express()
 const port = 8800
@@ -42,13 +41,12 @@ app.use('/api/spareparts', sparePartsRoutes);
 app.use('/report', reportRoute);
 app.use('/reject', rejectRoutes);
 app.use('/ownrequests', ownrequestsRoutes);
-app.use('/Assistent-Engineer', assistentengineerroutes);
+app.use('/Assistant-Engineer', assistentengineerroutes);
 app.use('/Technician', technicianRoutes);
-
-
-
-
-
+app.use('/logfile',logfileRoute);
+app.use('/transaction',transaction);
+app.use('/logout',logout)
+//app.use('/AddTransaction',AddTransaction)
 
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

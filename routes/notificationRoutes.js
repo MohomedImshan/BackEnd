@@ -15,6 +15,7 @@ router.get("/", (req, res) => {
     SELECT id, empNum, department, machine_code, type, description,
     userName, status, created_at, approved_date
     FROM requests WHERE status="pending"
+
   `;
 
   const params = [];

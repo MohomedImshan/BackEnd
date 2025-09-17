@@ -227,11 +227,7 @@ router.put("/status/:id",async (req, res) => {
 router.delete("/:id", (req, res) => {
   const id = req.params.id;
 
-  db.query("DELETE FROM spare_parts WHERE request_id = ?", [id], (err) => {
-    if (err) {
-      console.error("Delete parts error:", err);
-      return res.status(500).json({ error: "Delete failed", details: err.message });
-    }
+
 
     db.query("DELETE FROM requests WHERE id = ?", [id], (err2, result) => {
       if (err2) {
@@ -242,7 +238,7 @@ router.delete("/:id", (req, res) => {
       res.json({ message: "Request deleted successfully", result });
     });
   });
-});
+
 
 export default router;
 

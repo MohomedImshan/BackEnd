@@ -9,17 +9,20 @@ const router = express.Router()
 const SECRET_KEY = '12345';
 
 router.post('/',async(req,res)=>{
-    const {email,password} = req.body
+    const {identifier,password} = req.body
     
+    const isEmail = identifier.includes('@')
+    const sql = isEmail
+                ? "SELECT * FROM users WHERE email= ? "
+                :"SELECT * FROM users WHERE userName = ?"
+   
 
-    const sql = "SELECT * FROM users WHERE email = ?"
-
-    await db.query(sql,[email],async(err,results)=>{
+    await db.query(sql,[identifier],async(err,results)=>{
         if(err) return res.json({message:'Server error'})
 
         if(results.length === 0){
             console.log(results)
-            addLog(email,"LOGIN_FAILED","Invalid email")
+            addLog(identifier,"LOGIN_FAILED","Invalid email")
             return res.json({message:"Invalid email or password"})
         }
 

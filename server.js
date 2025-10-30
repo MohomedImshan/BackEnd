@@ -18,6 +18,7 @@ import ownrequestsRoutes from './routes/ownrequestsRoutes.js'
 import logfileRoute from './routes/logfileRoute.js'
 import transaction from './routes/transactionRoute.js'
 import logout from './routes/logout.js'
+import headerroute from './routes/headerroute.js'
 //import  AddTransaction from './routes/Service/transactionService.js'
 
 const app = express()
@@ -46,6 +47,7 @@ app.use('/Technician', technicianRoutes);
 app.use('/logfile',logfileRoute);
 app.use('/transaction',transaction);
 app.use('/logout',logout)
+app.use('/header',headerroute)
 //app.use('/AddTransaction',AddTransaction)
 
 

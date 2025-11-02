@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import dotenv from 'dotenv'
 
 import userConnection from './User/userConnection.js';
 import EngineerConnection from './User/EngineerConnection.js';
@@ -21,8 +22,10 @@ import logout from './routes/logout.js'
 import headerroute from './routes/headerroute.js'
 //import  AddTransaction from './routes/Service/transactionService.js'
 
+dotenv.config()
 const app = express()
-const port = 8800
+const port = process.env.PORT || 8800
+
 
 app.use(express.json())
 app.use(cors())

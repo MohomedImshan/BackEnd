@@ -1,10 +1,11 @@
 import mysql from 'mysql'
+import dotenv from 'dotenv'
 
 const db = mysql.createConnection({
-    host:'127.0.0.1',
-    user:'root',
-    password:'',
-    database:'spare-parts-management-system'
+    host: process.env.DB_HOST,        
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASS || '',
+    database: process.env.DB_NAME || 'spare-parts-management-system'
 })
 db.connect((err)=>{
     if(err){

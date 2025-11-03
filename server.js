@@ -34,7 +34,8 @@ app.use(bodyParser.json())
 app.use('/User',userConnection)
 app.use('/EngineerDashboard',EngineerConnection)
 app.use('/Register',registerRoutes)
-app.use('/login',loginRoutes)
+app.use('/api/login', loginRoutes)
+
 app.use('/Add-Employee',AddEmployeeRoute)
 app.use('/User',userConnection);
 app.use('/Engineer',EngineerConnection);

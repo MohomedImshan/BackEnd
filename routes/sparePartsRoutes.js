@@ -15,14 +15,14 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    const { empNum,department, type, item_name, quantity } = req.body;
+    const { empNum,department,supplier, type, item_name, quantity,cost } = req.body;
 
     if (!department || !type || !item_name || !quantity) {
         return res.status(400).json({ message: "All fields are required" });
     }
 
-    const sql = "INSERT INTO spare_parts_tbl (department, type, item_name, quantity) VALUES (?, ?, ?, ?)";
-    db.query(sql, [department, type, item_name, quantity], (err,result) => {
+    const sql = "INSERT INTO spare_parts_tbl (department,supplier, type, item_name, quantity,cost) VALUES (?, ?, ?, ?,?,?)";
+    db.query(sql, [department, supplier,type, item_name, quantity,cost], (err,result) => {
         if (err) return res.status(500).json({ error: err.message });
        addLog(empNum,"ADD SPARE PART",`Spare part is added ${item_name}`)
        const insertedId = result.insertId;
@@ -33,11 +33,11 @@ router.post('/', (req, res) => {
 });
 
 router.put('/:id', (req, res) => {
-    const { empNum,department, type, item_name, quantity } = req.body;
+    const { empNum,department, supplier,type, item_name, quantity,cost } = req.body;
     const { id } = req.params;
 
-    const sql = "UPDATE spare_parts_tbl SET department=?, type=?, item_name=?, quantity=? WHERE id=?";
-    db.query(sql, [department, type, item_name, quantity, id], (err) => {
+    const sql = "UPDATE spare_parts_tbl SET department=?,supplier=?, type=?, item_name=?, quantity=?, cost=? WHERE id=?";
+    db.query(sql, [department, supplier,type, item_name, quantity, cost,id], (err) => {
         if (err) return res.status(500).json({ error: err.message });
         addLog(empNum,"Updated Stock",`Quantity of ${item_name} is updated by ${quantity}`)
         AddTransaction("Update Spare parts",id,item_name,quantity)
@@ -55,17 +55,29 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-router.get('/stock',verifyToken,(req,res)=>{
-    const {department} = req.query;
-    const sql = "SELECT * FROM spare_parts_tbl WHERE department = ?"
-    db.query(sql,[department],(err,result)=>{
-        if(err)
-        {
-            console.error("Error fetching stock data:",err)
-            return res.status(500).json({message:"Sever error "})
+router.get('/stock', verifyToken, (req, res) => {
+    const { department } = req.query;
+
+    const sql = `
+        SELECT 
+            id,
+            department,
+            supplier,
+            type,
+            item_name,
+            quantity,
+            cost
+        FROM spare_parts_tbl
+        WHERE department = ?
+    `;
+
+    db.query(sql, [department], (err, result) => {
+        if (err) {
+            console.error("Error fetching stock data:", err);
+            return res.status(500).json({ message: "Server error" });
         }
-        res.json({stock:result})
-    })
-})
+        res.json({ stock: result });
+    });
+});
 
 export default router;

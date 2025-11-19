@@ -3,7 +3,8 @@ import db from '../db/db.js'
 import verifyToken from './authentication.js'
 
 const router = express.Router()
-
+//Getting the log files
+//if needed between days
 router.get('/', verifyToken, (req, res) => {
     const { from, to } = req.query;
 

@@ -7,7 +7,7 @@ import { addLog } from './Service/logService.js'
 
 const router = express.Router()
 const SECRET_KEY = '12345';
-
+//login to the system using email or password
 router.post('/',async(req,res)=>{
     const {identifier,password} = req.body
     
@@ -34,6 +34,7 @@ router.post('/',async(req,res)=>{
         }
 
         try{
+            //comparing the password
             const checkpassword = await bcrypt.compare(password,user.password)
         if(!checkpassword){
             addLog(user.empNum,"LOGIN_FAILED",`wrong password for email:${email}`)

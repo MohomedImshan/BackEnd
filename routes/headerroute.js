@@ -3,7 +3,7 @@ import db from '../db/db.js'
 import verifyToken from './authentication.js'
 
 const router = express.Router()
-
+// getting number of notifications
 router.get('/pendingcount', verifyToken, (req, res) => {
        db.query("SELECT COUNT(*) AS count FROM requests WHERE status = 'pending'", (error, results) => {
          if (error) {

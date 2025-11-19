@@ -3,6 +3,8 @@ import db from '../db/db.js'
 import verifyToken from './authentication.js'
 const router = express.Router()
 
+
+//getting the rejected requests
 router.get('/',verifyToken, async (req, res) => {
     const sql = "SELECT * FROM requests WHERE status='Rejected' AND approved_date>=DATE_SUB(NOW(), INTERVAL 14 DAY)";
     db.query(sql, (err, data) => {

@@ -6,16 +6,11 @@ import bcrypt from 'bcrypt'
 
 const router = express.Router()
 
+//user detail if an assistent engineer
 router.get("/",verifyToken, async (req, res) => {
     try {
 
         const sqlUser = "SELECT * FROM users ";
-        // const userData = await new Promise((resolve, reject) => {
-        //     db.query(sqlUser, (err, data) => {
-        //         if (err) return reject(err);
-        //         resolve(data);
-        //     });
-        // });
         db.query(sqlUser, (err, data) => {
             if (err) {
                 console.error("Error fetchiing notification", err.message)
@@ -48,6 +43,7 @@ router.get("/:empNum",verifyToken, async (req, res) => {
         return res.json({users:data})
     })
 })
+//change details
 router.put("/:empNum",async(req,res)=>{
     const empNum = req.params.empNum
     const {userName,email}=req.body
@@ -62,6 +58,9 @@ router.put("/:empNum",async(req,res)=>{
         res.status(500).json({error:"Update faile   d",details:err.message})
     }
 })
+
+
+//change password to new password
 router.put("/:empNum/changepassword",async(req,res)=>{
 const empNum = req.params.empNum
 
@@ -87,41 +86,7 @@ try{
     res.status(500).json({ error: "Update failed", details: err.message });
 }
 })
-// router.put("/:empNum",async(req,res)=>{
-//     const empNum = req.params.empNum
-//     const {status} = req.body
-//     const sql = "UPDATE users SET status=? WHERE empNum = ?"
 
-//     try{
-//         db.query(sql,[status,empNum])
-//         res.status(200).json({message:"Status update successfully"})
-//     }catch(err){
-//         res.status(500).json({error:"Update failed"})
-//     }
-// })
-// router.delete("/:empNum", async (req, res) => {
-//     const empNum = req.params.empNum;   
-//     try {
-//         const [result] = await db.query("DELETE FROM users WHERE empNum = ?", [empNum]);
-    
-//         if (result.affectedRows === 0) {
-//           return res.status(404).json({ message: "Engineer not found" });
-//         }
-//         alert('Engineer deleted')
-//         res.status(200).json({ message: "Engineer deleted successfully" });
-//       } catch (error) {
-//         console.error("Error deleting engineer:", error);
-//         res.status(500).json({ message: "Error deleting engineer", error });
-//       }
-// });
 
-router.delete('/:empNum',verifyToken,async (req, res) => {
-    const  empNum  = req.params.empNum;
 
-    const sql = "DELETE FROM users WHERE empNum=?";
-    db.query(sql, [empNum], (err) => {
-        if (err) return res.status(500).json({ error: err.message });
-        return res.json({ message: "User deleted successfully" });
-    });
-});
 export default router

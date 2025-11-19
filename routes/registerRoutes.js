@@ -4,7 +4,7 @@ import db from '../db/db.js'
 import addLog from './Service/logService.js';
 
 const router = express.Router()
-
+//register a new user
 router.post('/', async (req, res) => {
     const { userName, email, password, position } = req.body;
 

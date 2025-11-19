@@ -3,6 +3,7 @@ import db from '../db/db.js'
 import verifyToken from './authentication.js'
 const router = express.Router()
 
+//getting the approved requests
 router.get('/',verifyToken, async (req, res) => {
     const sql = "SELECT * FROM requests WHERE status='Approved' AND created_at>=DATE_SUB(NOW(), INTERVAL 14 DAY)";
     db.query(sql, (err, data) => {

@@ -3,6 +3,8 @@ import db from '../db/db.js'
 import verifyToken from './authentication.js'
 const router = express.Router()
 
+
+//details about transactions
 router.get('/',verifyToken, async (req, res) => {
     const sql = "SELECT * FROM transaction WHERE date_of_accept>=DATE_SUB(NOW(), INTERVAL 14 DAY)";
     db.query(sql, (err, data) => {

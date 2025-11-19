@@ -1,5 +1,6 @@
 import db from "../../db/db.js"
 
+//transaction details
 export const AddTransaction = (action,item_id,item_name,quantity = "")=>{
     const query = "INSERT INTO transaction (action,item_id,item_name,quantity) values (?,?,?,?)"
     db.query(query,[action,item_id,item_name,quantity],(err)=>{

@@ -3,7 +3,7 @@ import { addLog } from './Service/logService.js'
 import verifyToken from './authentication.js'
 
 const router = express.Router()
-
+//logout from the system
 router.post('/',verifyToken,async(req,res)=>{
     try{
         const empNum = req.user.empNum

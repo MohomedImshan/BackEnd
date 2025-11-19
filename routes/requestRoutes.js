@@ -106,38 +106,7 @@ router.put("/:id", (req, res) => {
 });
 
 // Update status (and approved_date if Approved)
-// router.put("/status/:id", async (req, res) =>{
-//   const {id} = req.params
-//   const {status} = req.body
-//   if(!status){
-//     return res.status(400).json({message:"Status is required"})
 
-//   }
-//   try{
-//     const [rows] = await db.query("SELECT * FROM requests WHERE id = ? ",[id])
-//     if(rows.length === 0){
-//       return res.status(404).json({message:"Request not found"})
-//     }
-//     const request = rows[0]
-
-//     if(status === "Approved" && request.parts){
-//       const parts = JSON.parse(request.parts)
-
-//       for (const part of parts){
-//         await db.query("UPDATE spare_parts_tbl SET quantity = quantity - ? WHERE item_name=? and quantity >=?",
-//         [part.quantity,part.item_name,part.quantity])
-//       }
-//     }
-  
-//   await db.query("UPDATE requests SET status = ? ,approved_date = CURRENT_TIMESTAMP WHERE id=?",
-//   [status,id])
-//   res.json({message: `Request ${id} updated to ${status}`})
-  
-//   }catch(err){
-//     console.error("Error updating request:", err);
-//     res.status(500).json({ message: "Internal Server Error", details: err.message });
-//   }
-// });
 
 router.put("/status/:id",async (req, res) => {
   const { id } = req.params;

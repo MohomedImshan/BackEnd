@@ -5,6 +5,7 @@ import verifyToken from "../routes/authentication.js";
 import addLog from "../routes/Service/logService.js";
 const router = express.Router()
 
+//details about users
 router.get("/", verifyToken,async (req, res) => {
     try {
         
@@ -24,6 +25,7 @@ router.get("/", verifyToken,async (req, res) => {
         return res.status(500).json({ error: err.message });
     }
 })
+//register new user
 router.post('/', verifyToken,async (req, res) => {
     const { userName, email, password, position } = req.body;
 
@@ -53,6 +55,7 @@ router.post('/', verifyToken,async (req, res) => {
     }
 });
 
+// update details
 router.put('/:empNum', verifyToken,async (req, res) => {
     
     const empNum = req.params.empNum;
@@ -67,6 +70,8 @@ router.put('/:empNum', verifyToken,async (req, res) => {
         return res.json({ message: "User status  updated" });
     });
 });
+
+//delete user
 router.delete('/:empNum',verifyToken,async (req, res) => {
     const  empNum  = req.params.empNum;
     const loggedInUser = req.user.empNum

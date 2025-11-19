@@ -1,5 +1,6 @@
 import db from "../../db/db.js"
 
+//log details
 export const addLog = (empNum,action,details = "")=>{
     const query = "INSERT INTO user_logs (empNum,action,details) values (?,?,?)"
     db.query(query,[empNum,action,details],(err)=>{

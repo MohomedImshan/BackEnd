@@ -6,6 +6,7 @@ import verifyToken from './authentication.js'
 
 const router = express.Router();
 
+//getting details about spare parts
 router.get('/', (req, res) => {
     const sql = "SELECT * FROM spare_parts_tbl";
     db.query(sql, (err, data) => {
@@ -14,6 +15,7 @@ router.get('/', (req, res) => {
     });
 });
 
+//inserting new sparepart
 router.post('/', (req, res) => {
     const { empNum,department,supplier, type, item_name, quantity,cost } = req.body;
 
@@ -32,6 +34,7 @@ router.post('/', (req, res) => {
     });
 });
 
+//updating new sparepart
 router.put('/:id', (req, res) => {
     const { empNum,department, supplier,type, item_name, quantity,cost } = req.body;
     const { id } = req.params;
@@ -45,6 +48,8 @@ router.put('/:id', (req, res) => {
     });
 });
 
+
+//delete sparepart
 router.delete('/:id', (req, res) => {
     const { id } = req.params;
 
@@ -55,6 +60,8 @@ router.delete('/:id', (req, res) => {
     });
 });
 
+
+//get stock report for department
 router.get('/stock', verifyToken, (req, res) => {
     const { department } = req.query;
 
